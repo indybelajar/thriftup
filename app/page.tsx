@@ -1,76 +1,56 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { useCart } from "@/lib/cart-context"
-import type { ProductType } from "@/lib/types"
-import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Footer } from "@/components/landing/footer"
 
-export default function HomePage() {
-  const { addToCart } = useCart()
-  const [products, setProducts] = useState<ProductType[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("/api/products")
-        const data = await res.json()
-        setProducts(data)
-      } catch (e) {
-        console.error(e)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchProducts()
-  }, [])
-
-  if (loading) {
-    return <p className="text-sm text-slate-600">Loading products...</p>
-  }
-
+export default function Home() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">ThriftUp Collection</h1>
-        <p className="text-sm text-slate-600">
-          Barang-barang preloved yang siap diadopsi ✨
-        </p>
-      </div>
+    <>
+      <main className="space-y-20">
+        {/* HERO */}
+        <section className="text-center py-20">
+          <h1 className="text-4xl font-bold max-w-2xl mx-auto">
+            Belanja Thrift Premium Dengan Mudah & Hemat ♻️
+          </h1>
+          <p className="text-slate-600 mt-3 max-w-xl mx-auto">
+            Temukan barang-barang preloved berkualitas, aman, dan terkurasi.
+          </p>
 
-      {products.length === 0 ? (
-        <p className="text-sm text-slate-600">
-          Belum ada barang. Tambah dulu di halaman Add Product.
-        </p>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-          {products.map((product) => (
-            <Card key={product._id} className="flex flex-col overflow-hidden">
-              <div className="aspect-[4/5] w-full bg-slate-200" />
-              {/* nanti bisa ganti pakai <Image src={product.image} ... /> */}
+          <div className="mt-6 flex justify-center gap-4">
+            <Button size="lg" asChild>
+              <a href="/products">Lihat Koleksi</a>
+            </Button>
 
-              <div className="flex flex-1 flex-col gap-1 p-3">
-                <h2 className="text-sm font-medium">{product.name}</h2>
-                <p className="text-xs text-slate-500">
-                  {product.size && <>Size {product.size} • </>}
-                  {product.condition}
-                </p>
-                <p className="mt-1 text-sm font-semibold">
-                  Rp {product.price.toLocaleString("id-ID")}
-                </p>
+            <Button variant="outline" size="lg" asChild>
+              <a href="/add-product">Jual Barang</a>
+            </Button>
+          </div>
+        </section>
 
-                <Button
-                  className="mt-3 w-full"
-                  onClick={() => addToCart(product)}
-                >
-                  Add to Cart
-                </Button>
-              </div>
-            </Card>
-          ))}
-        </div>
-      )}
-    </div>
+        {/* PREVIEW 3 PRODUK */}
+        <section className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 max-w-5xl mx-auto">
+          <Card className="h-48 bg-slate-200" />
+          <Card className="h-48 bg-slate-200" />
+          <Card className="h-48 bg-slate-200" />
+        </section>
+
+        {/* CTA BAWAH */}
+        <section className="text-center py-16 bg-white rounded-2xl shadow-sm border mt-20">
+          <h2 className="text-3xl font-semibold">
+            Siap mulai thrifting?
+          </h2>
+
+          <p className="text-slate-600 mt-2 max-w-md mx-auto">
+            Jelajahi ratusan barang preloved yang menunggu pemilik baru.
+          </p>
+
+          <Button size="lg" className="mt-6" asChild>
+            <a href="/products">Mulai Belanja</a>
+          </Button>
+        </section>
+      </main>
+
+      {/* FOOTER */}
+      <Footer />
+    </>
   )
 }

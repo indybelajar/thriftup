@@ -10,16 +10,20 @@ export function MainNav() {
   return (
     <header className="sticky top-0 z-20 border-b bg-white/80 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+        
+        {/* LOGO */}
         <Link href="/" className="font-semibold text-lg">
           ThriftUp!
         </Link>
+
+        {/* NAV LINKS */}
         <nav className="flex items-center gap-4 text-sm">
           <Link href="/" className="hover:underline">
             Home
           </Link>
-          <Link href="/add-product" className="hover:underline">
-            Add Product
-          </Link>
+
+          {/* ADD PRODUCT DIHAPUS */}
+
           <Link href="/cart" className="relative hover:underline">
             Cart
             {totalItems > 0 && (
@@ -27,6 +31,11 @@ export function MainNav() {
                 {totalItems}
               </span>
             )}
+          </Link>
+
+          {/* NEW PROFILE BUTTON */}
+          <Link href="/profile" className="hover:underline font-semibold">
+            Profile
           </Link>
         </nav>
       </div>
