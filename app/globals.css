@@ -44,11 +44,7 @@
 }
 
 body {
-  background: radial-gradient(circle at 20% 30%, #FDCFFA, transparent 60%),
-              radial-gradient(circle at 80% 20%, #D78FEE, transparent 60%),
-              radial-gradient(circle at 50% 80%, #9B5DE0, transparent 60%),
-              radial-gradient(circle at 30% 70%, #F2AEBB, transparent 60%);
-  background-color: #FDCFFA;
+  background: #fff;
 }
 
 :root {
