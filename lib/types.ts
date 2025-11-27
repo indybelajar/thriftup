@@ -5,4 +5,5 @@ export type ProductType = {
   size?: string
   condition?: string
   image?: string
+  sellerWhatsapp: string // Tambahkan ini
 }
