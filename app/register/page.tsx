@@ -49,7 +49,7 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
       <Card className="w-full max-w-md shadow-lg border-slate-200">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Buat Akun Baru</CardTitle>
+          <CardTitle className="text-slate-700 text-2xl font-bold text-center">Buat Akun Baru</CardTitle>
           <p className="text-sm text-center text-slate-500">
             Daftar untuk mulai berjualan dan belanja
           </p>
