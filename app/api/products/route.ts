@@ -3,19 +3,14 @@ import { connectDB } from "@/lib/mongodb"
 import { Product } from "@/lib/models/product"
 
 export async function GET() {
-  try {
-    await connectDB()
-    const products = await Product.find().sort({ createdAt: -1 })
-    return NextResponse.json(products)
-  } catch (err) {
-    return NextResponse.json({ message: "Error fetching products" }, { status: 500 })
-  }
+  await connectDB()
+  const products = await Product.find().sort({ createdAt: -1 })
+  return NextResponse.json(products)
 }
 
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    // Extract stock from body
     const { name, price, size, stock, condition, image, sellerWhatsapp } = body
 
     if (!name || !price) {
@@ -31,7 +26,7 @@ export async function POST(req: Request) {
       name,
       price,
       size,
-      stock: stock || 1, // Default to 1 if not provided
+      stock: stock || 1, // Simpan stok (default 1)
       condition,
       image,
       sellerWhatsapp,

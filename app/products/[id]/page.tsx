@@ -6,35 +6,35 @@ import Link from "next/link"
 import Image from "next/image"
 import { useCart } from "@/lib/cart-context"
 import { 
-  Star, MapPin, ShieldCheck, Truck, RefreshCw, 
-  ArrowLeft, Heart, Share2, ShoppingCart, Check 
+  Star, ShieldCheck, Truck, RefreshCw, 
+  ArrowLeft, Share2, ShoppingCart, Check, AlertCircle 
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 
-// Tipe data (sesuaikan dengan API kamu)
+// Tipe data (Harus match dengan ProductType di cart-context)
 interface Product {
-  _id?: string
+  _id: string
   id?: string | number
   name: string
   price: number
   size: string
   condition: string
   image?: string
-  description?: string // Tambahan field deskripsi
+  description?: string
   category?: string
+  stock?: number
+  sellerWhatsapp: string 
 }
 
 export default function ProductDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const { addToCart } = useCart()
+  const { addToCart, items } = useCart()
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
-  const [activeImage, setActiveImage] = useState(0) // Untuk gallery jika ada multiple images
 
-  // Format IDR
   const formatRupiah = (number: number) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -43,16 +43,12 @@ export default function ProductDetailPage() {
     }).format(number)
   }
 
-  // Fetch Single Product
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        // Asumsi endpoint API support get by ID: /api/products/[id]
-        // Jika belum ada, kamu bisa fetch all lalu .find() di sini sementara
         const res = await fetch(`/api/products`) 
         if (res.ok) {
           const allProducts = await res.json()
-          // Mencari produk yang ID-nya cocok dengan URL
           const found = allProducts.find((p: any) => 
             (p._id === params.id) || (p.id?.toString() === params.id)
           )
@@ -70,15 +66,30 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (product) {
+      const existingItem = items.find((item) => item.product._id === product._id)
+      const currentQty = existingItem ? existingItem.quantity : 0
+      const availableStock = product.stock || 0
+
+      if (availableStock <= 0) {
+          alert("Maaf, stok barang ini sedang habis.")
+          return
+      }
+      if (currentQty + 1 > availableStock) {
+          alert(`Stok tidak mencukupi! Hanya tersisa ${availableStock} barang.`)
+          return
+      }
+
       addToCart(product)
-      // Opsional: Redirect langsung ke cart atau checkout
-      // router.push('/cart') 
       alert("Produk berhasil ditambahkan ke keranjang!")
     }
   }
 
   const handleBuyNow = () => {
     if (product) {
+      if ((product.stock || 0) <= 0) {
+          alert("Maaf, stok barang ini sedang habis.")
+          return
+      }
       addToCart(product)
       router.push('/checkout')
     }
@@ -86,49 +97,74 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#4e56c0]"></div>
+            <p className="text-slate-500 text-sm font-medium">Memuat produk...</p>
+        </div>
       </div>
     )
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-4">
+      <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center gap-4 text-center px-4">
+        <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center text-slate-400">
+            <AlertCircle className="w-10 h-10" />
+        </div>
         <h1 className="text-2xl font-bold text-slate-800">Produk Tidak Ditemukan</h1>
+        <p className="text-slate-500 max-w-md">Mungkin barang ini sudah laku terjual atau dihapus oleh penjual.</p>
         <Link href="/">
-          <Button variant="outline">Kembali ke Beranda</Button>
+          {/* FIX: Hapus variant, gunakan className manual */}
+          <Button className="border border-[#4e56c0] text-[#4e56c0] bg-white hover:bg-[#f8fafc] h-10 px-4">
+            Kembali ke Beranda
+          </Button>
         </Link>
       </div>
     )
   }
 
+  const isOutOfStock = (product.stock || 0) <= 0;
+
   return (
-    <div className="min-h-screen bg-slate-50 font-sans">
+    <div className="min-h-screen bg-[#f8fafc] font-sans pb-24">
       
+    
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-  
+
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
             
             {/* LEFT COLUMN: IMAGES */}
             <div className="space-y-4">
-                <div className="relative aspect-square bg-slate-100 rounded-3xl overflow-hidden border border-slate-200">
+                <div className="relative aspect-4/5 sm:aspect-square bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm group">
                     <Image
                         src={product.image || "https://placehold.co/600"}
                         alt={product.name}
                         fill
-                        className="object-cover hover:scale-105 transition-transform duration-700"
+                        className={`object-cover transition-transform duration-700 ${isOutOfStock ? 'grayscale opacity-80' : 'group-hover:scale-105'}`}
                         unoptimized={true}
                     />
-                    <Badge className="absolute top-4 left-4 bg-white/90 text-slate-900 hover:bg-white backdrop-blur shadow-sm">
-                        {product.condition}
-                    </Badge>
+                    
+                    <div className="absolute top-4 left-4">
+                        <Badge className="bg-white/95 text-[#4e56c0] hover:bg-white backdrop-blur shadow-md border border-[#fdcffa] px-3 py-1.5 text-sm font-bold">
+                            {product.condition}
+                        </Badge>
+                    </div>
+
+                    {isOutOfStock && (
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10 backdrop-blur-[2px]">
+                            <span className="bg-red-600 text-white px-8 py-3 rounded-full text-xl font-bold uppercase tracking-widest shadow-2xl border-4 border-white transform -rotate-12">
+                                Sold Out
+                            </span>
+                        </div>
+                    )}
                 </div>
-                {/* Thumbnail (Dummy loop for visual) */}
+                
                 <div className="grid grid-cols-4 gap-4">
-                    {[1,2,3].map((_, i) => (
-                        <div key={i} className={`aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-all ${i === 0 ? 'border-blue-600 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`}>
+                    {[1, 2, 3].map((_, i) => (
+                        <div key={i} className={`aspect-square rounded-2xl overflow-hidden border-2 cursor-pointer transition-all ${i === 0 ? 'border-[#4e56c0] ring-2 ring-[#fdcffa]' : 'border-transparent opacity-60 hover:opacity-100 hover:border-slate-300'}`}>
                              <Image
                                 src={product.image || "https://placehold.co/200"}
                                 alt="Thumbnail"
@@ -145,110 +181,127 @@ export default function ProductDetailPage() {
             {/* RIGHT COLUMN: INFO & ACTIONS */}
             <div className="flex flex-col h-full">
                 
-                <div className="mb-6">
-                    <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="secondary" className="bg-blue-50 text-blue-700 hover:bg-blue-100">
-                            Pre-loved
+                <div className="mb-8">
+                    <div className="flex items-center gap-3 mb-4">
+                        <Badge variant="secondary" className="bg-[#fdf4ff] text-[#9b5de0] border border-[#9b5de0]/20 hover:bg-[#fdcffa] px-3 py-1">
+                            Pre-loved Item
                         </Badge>
-                        <div className="flex items-center text-yellow-400 text-sm font-medium">
-                            <Star className="w-4 h-4 fill-current" />
-                            <span className="ml-1 text-slate-700">4.9 (24 Reviews)</span>
+                        <div className="flex items-center text-yellow-500 text-sm font-bold bg-yellow-50 px-2.5 py-1 rounded-full border border-yellow-100">
+                            <Star className="w-3.5 h-3.5 fill-current mr-1.5" />
+                            <span>4.9 (24)</span>
                         </div>
                     </div>
                     
-                    <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-2 leading-tight">
+                    <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 mb-4 leading-tight tracking-tight">
                         {product.name}
                     </h1>
                     
-                    <div className="flex items-end gap-3 mt-4">
-                        <span className="text-4xl font-bold text-blue-600">
+                    <div className="flex-wrap items-end gap-3 mt-4 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm inline-flex">
+                        <span className="text-4xl font-bold text-[#4e56c0]">
                             {formatRupiah(product.price)}
                         </span>
-                        {/* Dummy Discount logic */}
-                        <span className="text-lg text-slate-400 line-through mb-1">
-                            {formatRupiah(product.price * 1.5)}
-                        </span>
-                        <span className="text-sm font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-md mb-2">
-                            Hemat 33%
-                        </span>
-                    </div>
-                </div>
-
-                <Separator className="my-6" />
-
-                <div className="grid grid-cols-2 gap-6 mb-8">
-                    <div>
-                        <span className="block text-sm text-slate-500 mb-1">Ukuran</span>
-                        <div className="inline-flex items-center justify-center px-4 py-2 border-2 border-slate-900 rounded-lg font-bold text-slate-900 min-w-[3rem]">
-                            {product.size}
-                        </div>
-                    </div>
-                    <div>
-                        <span className="block text-sm text-slate-500 mb-1">Kondisi Barang</span>
-                        <div className="flex items-center gap-2 font-medium text-slate-700 mt-2">
-                            <Check className="w-5 h-5 text-green-500" />
-                            Siap Pakai
+                        <div className="flex flex-col mb-1">
+                            <span className="text-sm text-slate-400 line-through decoration-slate-300">
+                                {formatRupiah(product.price * 1.5)}
+                            </span>
+                            <span className="text-xs font-bold text-emerald-600">
+                                Hemat 33%
+                            </span>
                         </div>
                     </div>
                 </div>
 
-                <div className="prose prose-slate text-slate-600 mb-8">
-                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Deskripsi Produk</h3>
-                    <p>
-                        {product.description || "Barang ini adalah koleksi thrift berkualitas yang telah melalui proses kurasi ketat. Kondisi masih sangat prima, warna tidak pudar, dan tidak ada cacat mayor. Cocok untuk melengkapi gaya kasual kamu sehari-hari."}
+                <Separator className="my-2 bg-slate-200" />
+
+                <div className="grid grid-cols-2 gap-4 py-6">
+                    <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                        <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Ukuran</span>
+                        <div className="text-2xl font-black text-slate-800">
+                            {product.size || "-"}
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                        <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Stok Tersedia</span>
+                        <div className="flex items-center gap-2">
+                            {isOutOfStock ? (
+                                <span className="text-red-600 font-bold flex items-center gap-2">
+                                    Habis <AlertCircle className="w-5 h-5"/>
+                                </span>
+                            ) : (
+                                <span className="text-emerald-600 font-bold text-xl flex items-center gap-2">
+                                    {product.stock} <span className="text-sm font-medium text-slate-500">pcs</span>
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-8">
+                    <h3 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        Deskripsi Produk
+                    </h3>
+                    <p className="text-slate-600 leading-relaxed mb-6 text-sm sm:text-base">
+                        {product.description || "Barang ini adalah koleksi thrift berkualitas yang telah melalui proses kurasi ketat. Siap untuk digunakan"}
                     </p>
-                    <ul className="list-disc pl-5 mt-2 space-y-1 text-sm">
-                        <li>Original Brand Guaranteed</li>
-                        <li>Sudah dilaundry bersih (Ready to wear)</li>
-                        <li>Pengiriman aman dengan bubble wrap</li>
-                    </ul>
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-3 text-sm font-medium text-slate-700">
+                            <div className="p-1 rounded-full bg-[#fdf4ff]"><Check className="w-3.5 h-3.5 text-[#9b5de0]" /></div>
+                            Jaminan pengiriman cepat & aman
+                        </div>
+                        <div className="flex items-center gap-3 text-sm font-medium text-slate-700">
+                            <div className="p-1 rounded-full bg-[#fdf4ff]"><Check className="w-3.5 h-3.5 text-[#9b5de0]" /></div>
+                           Ready to use
+                        </div>
+                    </div>
                 </div>
 
                 {/* TRUST BADGES */}
-                <div className="grid grid-cols-3 gap-4 mb-8 bg-slate-50 p-4 rounded-xl">
-                    <div className="text-center">
-                        <ShieldCheck className="w-6 h-6 text-slate-400 mx-auto mb-2" />
-                        <span className="text-xs text-slate-600 block">Jaminan Aman</span>
+                <div className="grid grid-cols-3 gap-3 mb-8">
+                    <div className="flex flex-col items-center justify-center p-3 bg-white rounded-xl border border-slate-100 shadow-sm text-center gap-1">
+                        <ShieldCheck className="w-5 h-5 text-[#9b5de0]" />
+                        <span className="text-[10px] sm:text-xs font-bold text-slate-600">Jaminan Aman</span>
                     </div>
-                    <div className="text-center border-l border-slate-200">
-                        <Truck className="w-6 h-6 text-slate-400 mx-auto mb-2" />
-                        <span className="text-xs text-slate-600 block">Kirim Cepat</span>
+                    <div className="flex flex-col items-center justify-center p-3 bg-white rounded-xl border border-slate-100 shadow-sm text-center gap-1">
+                        <Truck className="w-5 h-5 text-[#9b5de0]" />
+                        <span className="text-[10px] sm:text-xs font-bold text-slate-600">Kirim Cepat</span>
                     </div>
-                    <div className="text-center border-l border-slate-200">
-                        <RefreshCw className="w-6 h-6 text-slate-400 mx-auto mb-2" />
-                        <span className="text-xs text-slate-600 block">Bebas Retur*</span>
+                    <div className="flex flex-col items-center justify-center p-3 bg-white rounded-xl border border-slate-100 shadow-sm text-center gap-1">
+                        <RefreshCw className="w-5 h-5 text-[#9b5de0]" />
+                        <span className="text-[10px] sm:text-xs font-bold text-slate-600">Bebas Retur*</span>
                     </div>
                 </div>
 
-                {/* ACTION BUTTONS (STICKY ON MOBILE BOTTOM) */}
-                <div className="mt-auto flex flex-col sm:flex-row gap-3 sticky bottom-0 sm:static p-4 sm:p-0 bg-white/80 backdrop-blur-md sm:bg-transparent border-t border-slate-200 sm:border-0 -mx-4 sm:mx-0">
-                    <Button 
-                        variant="outline" 
-                        size="lg" 
-                        className="flex-1 h-12 text-base font-semibold border-slate-300"
-                        onClick={handleAddToCart}
-                    >
-                        <ShoppingCart className="w-5 h-5 mr-2" /> Add to Cart
-                    </Button>
-                    <Button 
-                        size="lg" 
-                        className="flex-1 h-12 text-base font-bold bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30"
-                        onClick={handleBuyNow}
-                    >
-                        Beli Sekarang
-                    </Button>
+                {/* ACTION BUTTONS */}
+                <div className="mt-auto flex flex-col sm:flex-row gap-3 sticky bottom-4 sm:static z-40">
+                    <div className="p-4 sm:p-0 bg-white/90 backdrop-blur-xl sm:bg-transparent border border-slate-200 sm:border-0 rounded-2xl shadow-2xl sm:shadow-none flex flex-row gap-3 w-full">
+                        {/* FIX: Ganti variant="outline" dan size="lg" */}
+                        <Button 
+                            onClick={handleAddToCart}
+                            disabled={isOutOfStock}
+                            className="flex-1 h-14 bg-transparent border-2 border-slate-200 text-slate-700 hover:border-[#4e56c0] hover:text-[#4e56c0] hover:bg-[#f8fafc] rounded-xl font-bold"
+                        >
+                            <ShoppingCart className="w-5 h-5 mr-2" /> Keranjang
+                        </Button>
+                        
+                        {/* FIX: Ganti size="lg" */}
+                        <Button 
+                            onClick={handleBuyNow}
+                            disabled={isOutOfStock}
+                            className={`flex-[1.5] h-14 rounded-xl font-bold shadow-lg transition-all active:scale-95 text-white ${isOutOfStock ? 'bg-slate-300 cursor-not-allowed hover:bg-slate-300 text-slate-500' : 'bg-[#4e56c0] hover:bg-[#3d44a0] text-white shadow-indigo-200'}`}
+                        >
+                            {isOutOfStock ? "Stok Habis" : "Beli Sekarang"}
+                        </Button>
+                    </div>
                 </div>
 
             </div>
         </div>
 
-        {/* RELATED PRODUCTS (Opsional placeholder) */}
-        <div className="mt-20">
+        <div className="mt-24 border-t border-slate-200 pt-12">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">Mungkin Kamu Suka</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                 {/* Placeholder for related items */}
                  {[1,2,3,4].map((i) => (
-                    <div key={i} className="h-64 bg-slate-100 rounded-xl animate-pulse"></div>
+                    <div key={i} className="h-80 bg-white rounded-2xl border border-slate-200 animate-pulse shadow-sm"></div>
                  ))}
             </div>
         </div>

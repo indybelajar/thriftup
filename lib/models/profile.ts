@@ -2,27 +2,23 @@ import mongoose, { Schema, models, model } from "mongoose"
 
 const ProfileSchema = new Schema(
   {
-    userId: {
+    // Gunakan email sebagai ID unik karena terhubung dengan akun Login
+    email: {
       type: String,
       required: true,
       unique: true,
     },
     name: {
       type: String,
-      default: "Guest User",
-    },
-    email: {
-      type: String,
-      default: "-",
+      required: true,
     },
     bio: {
       type: String,
-      default: "Pengguna baru ThriftUp!",
+      default: "Pengguna ThriftUp",
     },
-    // --- TAMBAHKAN FIELD INI ---
     avatar: {
-      type: String, // Menyimpan URL gambar (string)
-      default: "",  // Default kosong jika user belum upload
+      type: String,
+      default: "",
     },
   },
   {

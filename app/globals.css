@@ -1,7 +1,6 @@
 @import "tailwindcss";
-/* @import "tw-animate-css"; */
 
-@custom-variant dark (&:is(.dark *));
+
 
 @theme inline {
   --color-background: var(--background);
@@ -44,82 +43,124 @@
 }
 
 body {
-  background: #fff;
+  background: var(--background);
+  color: var(--foreground);
 }
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+
+  /* Base Colors */
+  --background: #ffffff;
+  --foreground: #0f172a;
+  /* Slate 900 */
+
+  /* Cards & Popovers */
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+
+  /* BRAND COLORS */
+  /* Primary: Deep Purple Blue (#4e56c0) */
+  --primary: #4e56c0;
+  --primary-foreground: #ffffff;
+
+  /* Secondary: Pale Pink/Peach (#fdcffa) */
+  /* Cocok untuk badge atau tombol yang tidak mencolok */
+  --secondary: #fdcffa;
+  --secondary-foreground: #4e56c0;
+
+  /* Accent: Lavender (#d78fee) */
+  /* Cocok untuk hover states atau highlight */
+  --accent: #fdf4ff;
+  /* Versi sangat muda untuk hover background */
+  --accent-foreground: #4e56c0;
+
+  /* Muted */
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+
+  /* Destructive */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  /* Borders & Inputs */
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+
+  /* Ring: Purple (#9b5de0) */
+  --ring: #9b5de0;
+
+  /* Charts (Using your palette) */
+  --chart-1: #4e56c0;
+  --chart-2: #9b5de0;
+  --chart-3: #d78fee;
+  --chart-4: #fdcffa;
+  --chart-5: #2a2a2a;
+
+  /* Sidebar */
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #4e56c0;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #fdcffa;
+  --sidebar-accent-foreground: #4e56c0;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #9b5de0;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #020617;
+  /* Very Dark Blue */
+  --foreground: #f8fafc;
+
+  --card: #0f172a;
+  --card-foreground: #f8fafc;
+  --popover: #0f172a;
+  --popover-foreground: #f8fafc;
+
+  /* Dark Mode: Primary jadi lebih terang agar kontras */
+  --primary: #9b5de0;
+  --primary-foreground: #ffffff;
+
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+
+  --accent: #1e293b;
+  --accent-foreground: #f8fafc;
+
+  --destructive: #7f1d1d;
+  --destructive-foreground: #f8fafc;
+
+  --border: #1e293b;
+  --input: #1e293b;
+  --ring: #d78fee;
+
+  --chart-1: #9b5de0;
+  --chart-2: #4e56c0;
+  --chart-3: #d78fee;
+  --chart-4: #fdcffa;
+  --chart-5: #e2e8f0;
+
+  --sidebar: #0f172a;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #9b5de0;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #1e293b;
+  --sidebar-ring: #d78fee;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -159,7 +200,7 @@ html {
   animation-delay: 4s;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar (Updated Colors) */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -170,23 +211,25 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #3b82f6, #6366f1);
+  /* Gradient dari Primary (#4e56c0) ke Secondary Purple (#9b5de0) */
+  background: linear-gradient(180deg, #4e56c0, #9b5de0);
   border-radius: 10px;
   border: 2px solid #f1f5f9;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #2563eb, #4f46e5);
+  background: linear-gradient(180deg, #4e56c0, #d78fee);
 }
 
-/* Remove default focus outline and add custom one */
+/* Custom Focus Outline */
 *:focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid #9b5de0;
+  /* Ring color */
   outline-offset: 2px;
   border-radius: 8px;
 }
 
-/* Smooth transitions for all interactive elements */
+/* Smooth transitions */
 button,
 a,
 input,
@@ -202,10 +245,10 @@ textarea {
 
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 25px -5px rgba(78, 86, 192, 0.1), 0 10px 10px -5px rgba(78, 86, 192, 0.04);
 }
 
-/* Glassmorphism effect */
+/* Glassmorphism */
 .glass {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
@@ -213,9 +256,10 @@ textarea {
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* Gradient Text */
+/* Gradient Text (Updated) */
 .gradient-text {
-  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%);
+  /* Gradient dari #4e56c0 -> #9b5de0 -> #d78fee */
+  background: linear-gradient(135deg, #4e56c0 0%, #9b5de0 50%, #d78fee 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -226,7 +270,7 @@ img {
   image-rendering: -webkit-optimize-contrast;
 }
 
-/* Hide scrollbar for specific elements */
+/* Utilities */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -253,7 +297,7 @@ main>div>div>div {
   animation: fadeIn 0.5s ease-out;
 }
 
-/* Skeleton Loading */
+/* Skeleton Loading (Updated) */
 @keyframes shimmer {
   0% {
     background-position: -1000px 0;
@@ -266,17 +310,17 @@ main>div>div>div {
 
 .skeleton {
   animation: shimmer 2s infinite linear;
+  /* Shimmer effect with your lighter colors */
   background: linear-gradient(to right,
-      #f0f0f0 0%,
-      #e0e0e0 20%,
-      #f0f0f0 40%,
-      #f0f0f0 100%);
+      #f1f5f9 0%,
+      #fdcffa 20%,
+      /* Peach tint */
+      #f1f5f9 40%,
+      #f1f5f9 100%);
   background-size: 1000px 100%;
 }
 
-/* ==================== UTILITY CLASSES ==================== */
-
-/* Fade In Animation */
+/* Animations */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -291,7 +335,6 @@ main>div>div>div {
   animation: fade-in 0.6s ease-out;
 }
 
-/* Slide Up Animation */
 @keyframes slide-up {
   from {
     opacity: 0;
@@ -317,19 +360,7 @@ main>div>div>div {
   animation-delay: 0.4s;
 }
 
-/* Scrollbar Hide */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-/* ==================== RESPONSIVE IMPROVEMENTS ==================== */
-
-/* Better touch targets on mobile */
+/* Responsive */
 @media (max-width: 768px) {
 
   button,
@@ -339,7 +370,6 @@ main>div>div>div {
   }
 }
 
-/* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
 
   *,
@@ -352,11 +382,9 @@ main>div>div>div {
   }
 }
 
-/* ==================== DARK MODE SUPPORT (Optional) ==================== */
-
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0f172a;
-    --foreground: #f1f5f9;
+    --background: #020617;
+    --foreground: #f8fafc;
   }
 }
