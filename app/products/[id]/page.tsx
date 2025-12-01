@@ -183,13 +183,7 @@ export default function ProductDetailPage() {
                 
                 <div className="mb-8">
                     <div className="flex items-center gap-3 mb-4">
-                        <Badge variant="secondary" className="bg-[#fdf4ff] text-[#9b5de0] border border-[#9b5de0]/20 hover:bg-[#fdcffa] px-3 py-1">
-                            Pre-loved Item
-                        </Badge>
-                        <div className="flex items-center text-yellow-500 text-sm font-bold bg-yellow-50 px-2.5 py-1 rounded-full border border-yellow-100">
-                            <Star className="w-3.5 h-3.5 fill-current mr-1.5" />
-                            <span>4.9 (24)</span>
-                        </div>
+
                     </div>
                     
                     <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 mb-4 leading-tight tracking-tight">

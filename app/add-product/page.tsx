@@ -278,7 +278,7 @@ export default function AddProductPage() {
                                         name="size"
                                         value={formData.size}
                                         onChange={handleChange}
-                                        placeholder="S / M / L / XL"
+                                        placeholder="S / M / L / XL / -"
                                         className="text-slate-700 focus-visible:ring-[#9b5de0] focus-visible:border-[#9b5de0] placeholder:text-slate-400"
                                     />
                                 </div>
@@ -320,7 +320,7 @@ export default function AddProductPage() {
             {/* SIDEBAR ACTIONS (Desktop Sticky) */}
             <div className="space-y-6">
                 <Card className="border-slate-200 shadow-sm bg-white sticky top-24 overflow-hidden">
-                    <div className="h-1 bg-gradient-to-r from-[#4e56c0] via-[#9b5de0] to-[#fdcffa]"></div>
+                    <div className="h-1 bg-linear-to-r from-[#4e56c0] via-[#9b5de0] to-[#fdcffa]"></div>
                     <CardContent className="pt-6 space-y-4">
                         <h3 className="font-bold text-slate-900 text-lg">Siap Jualan?</h3>
                         <p className="text-sm text-slate-500 leading-relaxed">
